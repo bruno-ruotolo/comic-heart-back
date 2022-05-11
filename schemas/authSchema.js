@@ -22,3 +22,22 @@ export async function signUpSchema(req, res, next) {
 
   next();
 }
+
+export async function singInSchema(req, res, next) {
+  const { email, password } = req.body;
+
+  const signUpBody = {
+    email,
+    password
+  }
+
+  const registerSchema = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().required(),
+  });
+
+  const { error } = registerSchema.validate(signUpBody, { abortEarly: false });
+  if (error) return res.status(422).send(error.details.map(detail => detail.message));
+
+  next();
+}

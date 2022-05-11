@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { v4 as uuid } from "uuid";
 import chalk from "chalk";
 
 import db from "./../db.js";
@@ -16,7 +17,7 @@ export async function signUp(req, res) {
     await userCollection.insertOne({
       name,
       email: email.toLowerCase(),
-      passwordHash,
+      password: passwordHash,
       cart: []
     })
 
@@ -24,5 +25,30 @@ export async function signUp(req, res) {
   } catch (e) {
     console.log(chalk.red.bold(e));
     res.sendStatus(500);
+  }
+}
+
+export async function signIn(req, res) {
+  const { email, password } = req.body;
+
+  try {
+    const user = await db.collection("users").findOne({ email: email.toLowerCase() });
+
+    if (user && bcrypt.compareSync(password, user.password)) {
+      const token = uuid();
+      await db.collection("sessions").insertOne({
+        userId: user._id,
+        date: new Date(),
+        status: true,
+        token
+      })
+
+      res.status(200).send({ token, name: user.name, email });
+      return;
+    } else return res.status(400).send("Usuario/senha invalido");
+
+  } catch (e) {
+    console.log(e)
+    res.status(500).send(e);
   }
 }
