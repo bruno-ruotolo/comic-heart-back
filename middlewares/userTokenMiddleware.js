@@ -15,5 +15,4 @@ export async function userTokenMiddleware(req, res, next) {
   } catch (e) {
     res.sendStatus(500);
   }
-  next();
 }
