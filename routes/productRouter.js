@@ -4,6 +4,6 @@ import { validaHeader } from "../middlewares/validaHeader.js";
 
 const productRouter = Router();
 
-productRouter.post("/product:id", validaHeader, getProduct);
+productRouter.get("/product/:id", validaHeader, getProduct);
 
 export default productRouter;
