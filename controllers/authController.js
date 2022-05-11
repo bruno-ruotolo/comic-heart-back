@@ -43,7 +43,7 @@ export async function signIn(req, res) {
         token
       })
 
-      res.status(200).send({ token, name: user.name, email });
+      res.status(200).send({ token, name: user.name });
       return;
     } else return res.status(400).send("Usuario/senha invalido");
 
