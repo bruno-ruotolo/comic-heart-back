@@ -38,7 +38,7 @@ export async function addProduct(req, res) {
     for (let i = 0; i < cart.length; i++) {
       if (cart[i].productId === id) {
         cart[i].quant++;
-        verif = true;
+        findProduct = true;
       }
     }
     if (!findProduct) {
