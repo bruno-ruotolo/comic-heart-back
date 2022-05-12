@@ -19,7 +19,6 @@ export async function getProduct(req, res) {
       .send("Falha no getProduct, aconteceu o seguinte erro: " + e);
   }
 }
-// TODO Preciso testar esse addProduct com users/cart já feito, para conseguir ver se a lógica está certa.
 export async function addProduct(req, res) {
   const { id } = req.params;
   try {
@@ -31,24 +30,31 @@ export async function addProduct(req, res) {
       return res
         .status(404)
         .send("O id enviado não foi encontrado no Banco de Dados");
-
-    const user = res.locals.user;
-    const cart = user.cart;
-    let findProduct = false;
-    for (let i = 0; i < cart.length; i++) {
-      if (cart[i].productId === id) {
-        cart[i].quant++;
-        findProduct = true;
+    const { userId } = res.locals.session;
+    const user = await db.collection("users").find({ _id: userId }).toArray();
+    console.log(user[0].cart);
+    let cart = user[0].cart;
+    if (cart.length !== 0) {
+      let findProduct = false;
+      for (let i = 0; i < cart?.length; i++) {
+        if (cart[i].productId === id) {
+          cart[i].quant++;
+          findProduct = true;
+        }
       }
-    }
-    if (!findProduct) {
-      cart.push({ productId: id, quant: 1 });
+      if (!findProduct) {
+        cart.push({ productId: id, quant: 1 });
+      }
+    } else {
+      cart = [{ productId: id, quant: 1 }];
     }
     await db
       .collection("users")
-      .updateOne({ _id: user._id }, { $set: { cart: cart } });
+      .updateOne({ _id: userId }, { $set: { cart: cart } });
     res.status(200).send("Cart atualizado!");
   } catch (e) {
+    console.log(e);
+
     res
       .status(500)
       .send("Falha no addProduct, aconteceu o seguinte erro: " + e);
