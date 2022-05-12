@@ -7,6 +7,8 @@ import productRouter from "./routes/productRouter.js";
 import authRouter from "./routes/authRouter.js";
 import headerRouter from "./routes/headerRouter.js";
 import productListRouter from "./routes/productListRouter.js";
+import cartRouter from "./routes/cartRouter.js";
+
 
 //express config
 const app = express();
@@ -16,9 +18,10 @@ dotenv.config();
 
 //routes
 app.use(authRouter);
-app.use(productRouter);
 app.use(headerRouter);
 app.use(productListRouter);
+app.use(productRouter);
+app.use(cartRouter);
 
 //open server
 app.listen(process.env.PORT, () =>
