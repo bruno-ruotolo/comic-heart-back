@@ -41,19 +41,19 @@ export async function addProduct(req, res) {
   }
 }
 
-// FIXME RETORNANDO APENAS PROMISE
 export async function getCart(req, res) {
   try {
     const { userId } = res.locals.session;
-    const user = await db.collection("users").find({ _id: userId }).toArray();
-    const carts = user[0].cart;
-    const objRetorno = carts.map(async (cart) => {
-      const product = await db
-        .collection("products")
-        .findOne({ _id: new ObjectId(cart.productId) });
-      return { ...product, quant: cart.quant };
-    });
-    console.log(objRetorno);
+    const user = await db.collection("users").findOne({ _id: userId });
+    const carts = user.cart;
+    const objRetorno = await Promise.all(
+      carts.map(async (cart) => {
+        const product = await db
+          .collection("products")
+          .findOne({ _id: new ObjectId(cart.productId) });
+        return { ...product, quant: cart.quant };
+      })
+    );
     res.status(200).send(objRetorno);
   } catch (e) {
     res.status(500).send("Falha no getCart, aconteceu o seguinte erro: " + e);
