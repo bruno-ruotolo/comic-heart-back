@@ -41,6 +41,7 @@ export async function addProduct(req, res) {
   }
 }
 
+// FIXME RETORNANDO APENAS PROMISE
 export async function getCart(req, res) {
   try {
     const { userId } = res.locals.session;
