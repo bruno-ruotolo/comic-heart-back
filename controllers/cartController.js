@@ -59,3 +59,21 @@ export async function getCart(req, res) {
     res.status(500).send("Falha no getCart, aconteceu o seguinte erro: " + e);
   }
 }
+
+export async function deleteProduct(req, res) {
+  const { productId } = req.params;
+  const { userId } = res.locals.session;
+  try {
+    const user = await db.collection("users").findOne({ _id: userId });
+    let cart = user.cart;
+    cart = cart.filter((c) => c.productId !== productId);
+    await db
+      .collection("users")
+      .updateOne({ _id: userId }, { $set: { cart: cart } });
+    res.status(200).send("Cart atualizado!");
+  } catch (e) {
+    res
+      .status(500)
+      .send("Falha no deleteProduct, aconteceu o seguinte erro: " + e);
+  }
+}
