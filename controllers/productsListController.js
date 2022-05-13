@@ -12,6 +12,7 @@ export async function GetProductsList(req, res) {
       const produtsFiltered = productsList.filter(({ name }) => {
         return (name.toLowerCase()).includes(search.toLowerCase());
       });
+
       res.status(200).send(produtsFiltered);
       return;
     }
