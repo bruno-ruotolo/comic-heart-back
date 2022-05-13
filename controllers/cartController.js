@@ -1,4 +1,5 @@
 import db from "./../db.js";
+import joi from "joi";
 import { ObjectId } from "mongodb";
 
 export async function addProduct(req, res) {
@@ -13,9 +14,9 @@ export async function addProduct(req, res) {
         .status(404)
         .send("O id enviado não foi encontrado no Banco de Dados");
     const { userId } = res.locals.session;
-    const user = await db.collection("users").find({ _id: userId }).toArray();
-    console.log(user[0].cart);
-    let cart = user[0].cart;
+    const user = await db.collection("users").findOne({ _id: userId });
+    console.log(user.cart);
+    let cart = user.cart;
     if (cart.length !== 0) {
       let findProduct = false;
       for (let i = 0; i < cart?.length; i++) {
@@ -57,5 +58,55 @@ export async function getCart(req, res) {
     res.status(200).send(objRetorno);
   } catch (e) {
     res.status(500).send("Falha no getCart, aconteceu o seguinte erro: " + e);
+  }
+}
+
+export async function deleteProduct(req, res) {
+  const { productId } = req.params;
+  const { userId } = res.locals.session;
+  try {
+    const user = await db.collection("users").findOne({ _id: userId });
+    let cart = user.cart;
+    cart = cart.filter((c) => c.productId !== productId);
+    await db
+      .collection("users")
+      .updateOne({ _id: userId }, { $set: { cart: cart } });
+    res.status(200).send("Cart atualizado!");
+  } catch (e) {
+    res
+      .status(500)
+      .send("Falha no deleteProduct, aconteceu o seguinte erro: " + e);
+  }
+}
+
+export async function changeQuant(req, res) {
+  const { increaseQuant, productId } = req.body;
+  const { userId } = res.locals.session;
+  const changeQuantSchema = joi.object({
+    increaseQuant: joi.boolean().required(),
+    productId: joi.string().required(),
+  });
+  const { error } = changeQuantSchema.validate(req.body, {
+    abortEarly: false,
+  });
+  if (error) {
+    return res.status(422).send(error.details.map((detail) => detail.message));
+  }
+  try {
+    const user = await db.collection("users").findOne({ _id: userId });
+    let cart = user.cart;
+    for (let i = 0; i < cart.length; i++) {
+      if (cart[i].productId === productId) {
+        increaseQuant ? (cart[i].quant += 1) : (cart[i].quant -= 1);
+      }
+    }
+    await db
+      .collection("users")
+      .updateOne({ _id: userId }, { $set: { cart: cart } });
+    res.status(200).send("Cart atualizado!");
+  } catch (e) {
+    res
+      .status(500)
+      .send("Falha no changeQuant, aconteceu o seguinte erro: " + e);
   }
 }
