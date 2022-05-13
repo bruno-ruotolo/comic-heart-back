@@ -5,7 +5,6 @@ export async function getCheckout(req, res) {
   const { userId } = res.locals.session;
   try {
     const user = await db.collection("users").findOne({ _id: userId });
-
     res.status(200).send({ name: user.name, email: user.email });
   } catch (e) {
     res.status(500).send("Falha no Checkout, aconteceu o seguinte erro: " + e);
