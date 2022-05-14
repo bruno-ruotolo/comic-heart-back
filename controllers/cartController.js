@@ -15,7 +15,6 @@ export async function addProduct(req, res) {
         .send("O id enviado não foi encontrado no Banco de Dados");
     const { userId } = res.locals.session;
     const user = await db.collection("users").findOne({ _id: userId });
-    console.log(user.cart);
     let cart = user.cart;
     if (cart.length !== 0) {
       let findProduct = false;
