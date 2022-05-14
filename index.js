@@ -8,7 +8,7 @@ import authRouter from "./routes/authRouter.js";
 import headerRouter from "./routes/headerRouter.js";
 import productListRouter from "./routes/productListRouter.js";
 import cartRouter from "./routes/cartRouter.js";
-
+import addressRouter from "./routes/addressRouter.js";
 
 //express config
 const app = express();
@@ -22,6 +22,7 @@ app.use(headerRouter);
 app.use(productListRouter);
 app.use(productRouter);
 app.use(cartRouter);
+app.use(addressRouter);
 
 //open server
 app.listen(process.env.PORT, () =>
