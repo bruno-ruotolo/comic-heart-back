@@ -3,7 +3,6 @@ import db from "../db.js";
 
 export async function GetProductsList(req, res) {
   const search = req.query.s
-  console.log(search)
 
   try {
     const productsList = await db.collection("products").find({}).toArray();
