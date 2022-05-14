@@ -1,9 +1,12 @@
 import { Router } from "express";
-import postAddress from "../controllers/addressController";
-import { userTokenMiddleware } from "../middlewares/userTokenMiddleware";
+
+import { getAddress, postAddress } from "../controllers/addressController.js";
+import { userTokenMiddleware } from "../middlewares/userTokenMiddleware.js";
+import { addressSchema } from "../schemas/addressSchema.js";
 
 const addressRouter = Router();
 
-addressRouter.post("/address", userTokenMiddleware, postAddress);
+addressRouter.post("/address", userTokenMiddleware, addressSchema, postAddress);
+addressRouter.get("/address", userTokenMiddleware, getAddress)
 
 export default addressRouter;

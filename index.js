@@ -25,6 +25,7 @@ app.use(productRouter);
 app.use(cartRouter);
 app.use(addressRouter);
 app.use(checkoutRouter);
+
 //open server
 app.listen(process.env.PORT, () =>
   console.log(chalk.blue.bold("Server ON port " + process.env.PORT))
