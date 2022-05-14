@@ -8,6 +8,7 @@ import authRouter from "./routes/authRouter.js";
 import headerRouter from "./routes/headerRouter.js";
 import productListRouter from "./routes/productListRouter.js";
 import cartRouter from "./routes/cartRouter.js";
+import addressRouter from "./routes/addressRouter.js";
 import checkoutRouter from "./routes/checkoutRouter.js";
 
 //express config
@@ -22,6 +23,7 @@ app.use(headerRouter);
 app.use(productListRouter);
 app.use(productRouter);
 app.use(cartRouter);
+app.use(addressRouter);
 app.use(checkoutRouter);
 
 //open server
