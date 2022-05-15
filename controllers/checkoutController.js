@@ -34,7 +34,11 @@ export async function postCheckout(req, res) {
       payment,
       cart: user.cart,
       totalValue,
+      address: user.address,
     });
+    await db
+      .collection("users")
+      .updateOne({ _id: userId }, { $set: { cart: [] } });
     res.status(201).send("Seu checkout foi feito!");
   } catch (e) {
     res.status(500).send("Falha no Checkout, aconteceu o seguinte erro: " + e);
