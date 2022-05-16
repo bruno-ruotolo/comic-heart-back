@@ -19,6 +19,6 @@ export async function GetProductsList(req, res) {
     res.status(200).send(productsList);
   } catch (e) {
     console.log(chalk.red.bold(e));
-    res.sendStatus(500);
+    res.status(500).send(e);
   }
 }
